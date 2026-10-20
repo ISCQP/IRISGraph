@@ -1,0 +1,56 @@
+# =============================================================================
+# Graph testbed - one command to a working copy of the TESTBED graph use cases and data.
+#
+#   docker compose -f container/docker-compose.yml up -d --build        (from the repository root)
+#   cd container && docker compose up -d --build                         (or from this folder)
+#
+# What you get (namespace TESTBED; all pages need a login, default _SYSTEM / SYS):
+#   http://localhost:52780/csp/testbed/Logistics.UI.RiskDemo.cls                   supply-chain risk tracing (zh); RiskDemoEN.cls for English
+#   http://localhost:52780/csp/testbed/EMR.UI.ContactTrace.cls                     contact tracing, graph vs SQL (2000 people)
+#   http://localhost:52780/csp/testbed/ClinicalResearch.Demo.GenomeCircos.cls      curated genome graph (Circos)
+#   http://localhost:52780/csp/testbed/Logistics.UI.TyphoonDemo.cls                typhoon shipping impact (builds its own extra data on first visit)
+#   http://localhost:52780/csp/testbed/Graph.UI.SchemaGraph.cls                    class / relation schema of every graph class
+#   http://localhost:52780/api/graph/singlehop                                      Graph REST (POST, JSON, same login)
+#   http://localhost:52780/csp/sys/UtilHome.csp                                     Management Portal
+# SQL: connect to port 1982, namespace TESTBED, or open System Explorer > SQL in the portal.
+#   SELECT s.ID, s.Name FROM Logistics_Risk.RiskEvent r
+#     JOIN Graph.SingleHop('Logistics.Risk.RiskEvent', CAST(r.ID AS VARCHAR(20)), 'affects_segment', 0) h ON 1=1
+#     JOIN Logistics_Route.RouteSegment s ON s.ID = h.TargetId
+# Note: ids are assigned when the image is built, so the risk event here has id 1 (graph ids of persistent objects are strings: '1').
+# Note: the community license caps concurrent web sessions; use one browser rather than many parallel clients.
+#
+# Included data: the Persian Gulf risk case and 2000-person contact tracing.
+# Excluded by design: ClinicalResearch.ClinicalAI.*, ProjectKB.*, the EMR/drug/gene sample, the PGx platform (fixtures, CPIC, knowledge graph, workbench) and GraphAction.
+#
+# Settings (all optional, put them in a .env file next to this one):
+#   IRIS_IMAGE               base image; default is the public iris-community image. Use your own IRIS / IRIS for Health image if you have one
+#   TESTBED_WEB_PORT         host web port, default 52780
+#   TESTBED_SUPERSERVER_PORT host SuperServer port, default 1982
+#   TESTBED_ADMIN_PASSWORD   if set, replaces the password of _SYSTEM, SuperUser and Admin at start-up
+#   TESTBED_CONTAINER        container name, default graph-testbed
+# The data is part of the image: `docker compose down` then `up` returns to the seeded state.
+# =============================================================================
+name: graph-testbed
+
+services:
+  iris:
+    build:
+      context: ..
+      dockerfile: DemoContainer/Dockerfile
+      args:
+        IMAGE: ${IRIS_IMAGE:-containers.intersystems.com/intersystems/iris-community:latest-cd}
+    image: graph-testbed:latest
+    container_name: ${TESTBED_CONTAINER:-graph-testbed}
+    command: ["--after", "/opt/testbed/post-start.sh", "--log", "/usr/irissys/mgr/messages.log"]
+    ports:
+      - "${TESTBED_SUPERSERVER_PORT:-1982}:1972"
+      - "${TESTBED_WEB_PORT:-52780}:52773"
+    environment:
+      TESTBED_ADMIN_PASSWORD: ${TESTBED_ADMIN_PASSWORD:-}
+    healthcheck:
+      test: ["CMD-SHELL", "iris qlist IRIS | grep -q '\\^running,' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 30s
+    restart: unless-stopped

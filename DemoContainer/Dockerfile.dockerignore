@@ -1,0 +1,13 @@
+# Whitelist build context for container/Dockerfile (keeps the 1+ GB data/graph-demo and other large folders out of the context)
+*
+!src/Graph
+!DemoContainer/classes
+!DemoContainer/Install/Testbed.cls
+!DemoContainer/iris.testbed.script
+!DemoContainer/iris.finish.script
+!DemoContainer/post-start.sh
+**/Old
+**/history
+**/*.bak
+**/.DS_Store
+Graph/Demo

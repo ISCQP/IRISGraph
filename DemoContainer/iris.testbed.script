@@ -1,0 +1,8 @@
+// Graph testbed build script, step 1 (piped mode: one physical line per statement). A failure exits non-zero and fails the image build.
+zn "%SYS"
+Do ##class(Security.Users).UnExpireUserPasswords("*")
+Set sc=$SYSTEM.OBJ.Load("/opt/testbed/src/Install/Testbed.cls","ck") If $SYSTEM.Status.IsError(sc) Write $SYSTEM.Status.GetErrorText(sc),! Do $ZUTIL(4,$JOB,2)
+Do ##class(Install.Testbed).Exit(##class(Install.Testbed).Setup("/opt/testbed"))
+zn "TESTBED"
+Do ##class(Install.Testbed).Exit(##class(Install.Testbed).Seed())
+Halt
