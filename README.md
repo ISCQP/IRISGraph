@@ -65,12 +65,15 @@ writes fail with `LEGACY_GRAPH_LAYOUT`.
 For a quick look, simply build and start the demo container, which includes three demo use cases that run out of the box—no manual class imports, data preparation, or REST application setup required.
 
 `git clone https://github.com/ISCQP/IRISGraph.git`
+
 `cd <repository directory>/Graph`
+
 `docker compose -f democontainer/docker-compose.yml up -d --build`
+
 Once started, open the pages below in a browser.
 
 
-####Demo 1: Logistics Risk Tracking (Logistics.UI.RiskDemo)
+#### Demo 1: Logistics Risk Tracking (Logistics.UI.RiskDemo)
 URL: http://localhost:52780/csp/testbed/Logistics.UI.RiskDemo.cls
 
 Scenario: a geopolitical conflict breaks out in the Strait of Hormuz.
@@ -87,7 +90,7 @@ The page also offers handling recommendations, and clicking "Trigger risk" repla
 
 Why it matters: the graph edges are maintained automatically by Graph.Object.Index when objects are saved, and the model contains not a single line of hand-written edge-building code. This is the most direct proof that "business data already contains knowledge": the risk, segments, shipments, purchase orders and suppliers are all ordinary business objects, and the impact-chain analysis simply walks along their references.
 
-####Demo 2: EMR Contact Tracing (EMR.UI.ContactTrace)
+#### Demo 2: EMR Contact Tracing (EMR.UI.ContactTrace)
 URL: http://localhost:52780/csp/testbed/EMR.UI.ContactTrace.cls
 
 This is a "graph vs. SQL" comparison demo.
@@ -100,7 +103,7 @@ The page times both sides side by side for different values of k and checks that
 
 Why it matters: It illustrates the performance advantages of graph-based approaches over pure SQL for specific analytical use cases. The third subscript of an edge directly stores the contact time, so this example also shows how to use "numeric IDs + writing edges directly with Graph.Store", which is the low-level data-layer graph, whereas the previous demo is an object projection graph. Both ways of building a graph use the same query engine.
 
-####Demo 3: Genome Knowledge Graph (GenomeCircos, ClinicalResearch.Demo.GenomeCircos)
+#### Demo 3: Genome Knowledge Graph (GenomeCircos, ClinicalResearch.Demo.GenomeCircos)
 URL: http://localhost:52780/csp/testbed/ClinicalResearch.Demo.GenomeCircos.cls
 
 A "genome → diagnosis → medication" knowledge graph for a sample patient, P001. It is hand-curated synthetic data: real gene symbols and chromosomal loci, star-allele or rsID variants, pathways, diseases, phenotypes, drugs, and pharmacogenomic relationships organized according to CPIC guidelines.
