@@ -289,6 +289,10 @@ Property Supplier As Logistics.Business.Supplier;  // persistent reference → a
   the missing parameters.
 - Set `GraphUse = 0` to **exclude** a property that would otherwise be auto-included.
 
+### Graph Schema Viewer
+Graph.UI.SchemaGraph.cls, a CSP web page, answers "what does the graph model look like as a whole?" with a class-level map built from the graph dictionary (`^GraphData.Dic`). Each node is a persistent class, and each edge is a relation, drawn from the declaring class to its target type. There is no instance data involved, so it renders instantly regardless of how many objects you have. It is also a quick way to review a model, spot classes that are missing a `Direction` or `Relation`, or decide which relation paths to feed into `MultiHop`. 
+
+
 ---
 
 ## 3. Edge direction rules
