@@ -61,14 +61,15 @@ A namespace that already holds edge data in the older, non-layered layout (first
 node) must be converted once with `##class(Graph.Layer).Migrate("User")`. Until then reads and
 writes fail with `LEGACY_GRAPH_LAYOUT`.
 
-### Quick look with container
-To have a quick look, you can just start the demo container which includes 3 demo use cases. Build and start it and they run as is, with no manual class import, data preparation or REST application setup.
+### Quick look with the Demo Container
+For a quick look, simply build and start the demo container, which includes three demo use cases that run out of the box—no manual class imports, data preparation, or REST application setup required.
 
-Bash
-git clone https://github.com/ISCQP/IRISGraph.git
-cd <repository directory>/Graph
-docker compose -f democontainer/docker-compose.yml up -d --build
+`git clone https://github.com/ISCQP/IRISGraph.git`
+`cd <repository directory>/Graph`
+`docker compose -f democontainer/docker-compose.yml up -d --build`
 Once started, open the pages below in a browser.
+
+
 ####Demo 1: Logistics Risk Tracking (Logistics.UI.RiskDemo)
 URL: http://localhost:52780/csp/testbed/Logistics.UI.RiskDemo.cls
 
