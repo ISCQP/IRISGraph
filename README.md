@@ -61,6 +61,56 @@ A namespace that already holds edge data in the older, non-layered layout (first
 node) must be converted once with `##class(Graph.Layer).Migrate("User")`. Until then reads and
 writes fail with `LEGACY_GRAPH_LAYOUT`.
 
+### Quick look with container
+To have a quick look, you can just start the demo container which includes 3 demo use cases. Build and start it and they run as is, with no manual class import, data preparation or REST application setup.
+
+Bash
+git clone https://github.com/ISCQP/IRISGraph.git
+cd <repository directory>/Graph
+docker compose -f democontainer/docker-compose.yml up -d --build
+Once started, open the pages below in a browser.
+####Demo 1: Logistics Risk Tracking (Logistics.UI.RiskDemo)
+URL: http://localhost:52780/csp/testbed/Logistics.UI.RiskDemo.cls
+
+Scenario: a geopolitical conflict breaks out in the Strait of Hormuz.
+
+The conflict is modeled as a risk event. It affects the route segments passing through the strait, and a "120-hour delay" impact node is computed and propagated along the graph to the affected shipment SHP-1, purchase order PO-1001 and supplier Gulf Petrochem.
+
+The page traces this with the single-hop, multi-hop and BFS functions of Graph.Tools:
+
+Single hop: get the affected route segments;
+Multi-hop: get the shipments, purchase orders and suppliers;
+Five-step reverse multi-hop: trace back from a segment to find the shipments that actually pass through it. The data deliberately includes a control shipment, SHP-2, which detours around the Cape of Good Hope, and the reverse trace correctly excludes it;
+BFS: starting from the risk, draw the entire impact subgraph.
+The page also offers handling recommendations, and clicking "Trigger risk" replays the whole event.
+
+Why it matters: the graph edges are maintained automatically by Graph.Object.Index when objects are saved, and the model contains not a single line of hand-written edge-building code. This is the most direct proof that "business data already contains knowledge": the risk, segments, shipments, purchase orders and suppliers are all ordinary business objects, and the impact-chain analysis simply walks along their references.
+
+####Demo 2: EMR Contact Tracing (EMR.UI.ContactTrace)
+URL: http://localhost:52780/csp/testbed/EMR.UI.ContactTrace.cls
+
+This is a "graph vs. SQL" comparison demo.
+
+It uses synthetic presence records for 2,000 people to derive person-to-person contacts, about 52,000 edges. The question is: starting from the index case, along contact chains with increasing time, who could be reached within k generations?
+
+Graph side: a temporal BFS that expands only along edges whose contact time is not earlier than the time the previous person was infected;
+SQL side: k self-joins on the contact table, with a time-monotonicity constraint added at each hop, and intermediate results that grow with the k-th power of the degree.
+The page times both sides side by side for different values of k and checks that the results agree. On local data with k=3, the graph and pure SQL both return 1,428 people (this result is from a different dataset; the data in the new image is regenerated, so the headcount will differ slightly). A plain BFS that ignores time returns a larger upper bound.
+
+Why it matters: It illustrates the performance advantages of graph-based approaches over pure SQL for specific analytical use cases. The third subscript of an edge directly stores the contact time, so this example also shows how to use "numeric IDs + writing edges directly with Graph.Store", which is the low-level data-layer graph, whereas the previous demo is an object projection graph. Both ways of building a graph use the same query engine.
+
+####Demo 3: Genome Knowledge Graph (GenomeCircos, ClinicalResearch.Demo.GenomeCircos)
+URL: http://localhost:52780/csp/testbed/ClinicalResearch.Demo.GenomeCircos.cls
+
+A "genome → diagnosis → medication" knowledge graph for a sample patient, P001. It is hand-curated synthetic data: real gene symbols and chromosomal loci, star-allele or rsID variants, pathways, diseases, phenotypes, drugs, and pharmacogenomic relationships organized according to CPIC guidelines.
+
+The data is stored in the same ^GraphData, with node types for patient, variant, gene, pathway, disease, phenotype and drug. The page fetches the data once and switches between three views on the front end using a Circos circular plot:
+
+Genome coordinates: arcs by chromosome, with cross-chromosome fusions such as BCR-ABL1 and EML4-ALK drawn as highlighted chords;
+Knowledge reasoning: arcs by node type, with all relations drawn as chords, showing the multi-hop reasoning "patient → variant → gene → pathway/disease → phenotype → drug";
+Medication safety: arcs by gene, with gene-to-drug edges colored by metabolism, target, transport, HLA risk, contraindication and resistance.
+Why it matters: this is the "traditional knowledge" side of the story. The knowledge graph is stored as a data-layer graph and shares the same graph engine with business data through the layer mechanism.
+
 ---
 
 ## 1. Concepts — the data-layer graph (foundation)
