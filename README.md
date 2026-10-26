@@ -41,6 +41,8 @@ and `User` — and reads return the union of the layers in the current view (§5
 
 ## Installation
 
+If you only want to install the graph feature and skip the demo use cases, follow these steps.
+
 1. Import the classes of the `Graph` package into your namespace. The core is `Graph.Store`,
    `Graph.Layer`, `Graph.Tools`, `Graph.SQL`, `Graph.Object.*` and `Graph.REST.*`; `Graph.Analysis`
    and `Graph.UI.*` are optional. The demo classes (`Graph.Demo.*`) and the
