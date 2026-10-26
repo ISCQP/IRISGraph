@@ -50,7 +50,7 @@ If you only want to install the graph feature and skip the demo use cases, follo
    needed at run time.
 
    ```objectscript
-   Do $SYSTEM.OBJ.LoadDir("/path/to/Graph", "ck", .err, 1)
+   Do $SYSTEM.OBJ.LoadDir("/src/Graph", "ck", .err, 1)
    ```
 
 2. Nothing else is required. The first write registers the `Core` (read-only) and `User`
