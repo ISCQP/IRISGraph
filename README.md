@@ -45,9 +45,7 @@ If you only want to install the graph feature and skip the demo use cases, follo
 
 1. Import the classes of the `Graph` package into your namespace. The core is `Graph.Store`,
    `Graph.Layer`, `Graph.Tools`, `Graph.SQL`, `Graph.Object.*` and `Graph.REST.*`; `Graph.Analysis`
-   and `Graph.UI.*` are optional. The demo classes (`Graph.Demo.*`) and the
-   test and benchmark classes (`Graph.Test*`, `Graph.Benchmark`, `Graph.FanoutBench`) are not
-   needed at run time.
+   and `Graph.UI.*` are optional. 
 
    ```objectscript
    Do $SYSTEM.OBJ.LoadDir("/src/Graph", "ck", .err, 1)
